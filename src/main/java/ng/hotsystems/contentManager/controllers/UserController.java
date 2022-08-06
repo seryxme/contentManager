@@ -1,12 +1,10 @@
 package ng.hotsystems.contentManager.controllers;
 
-import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
-import ng.hotsystems.contentManager.dtos.requests.LoginUserRequest;
-import ng.hotsystems.contentManager.dtos.requests.RegisterUserRequest;
-import ng.hotsystems.contentManager.dtos.responses.AddArticleResponse;
-import ng.hotsystems.contentManager.dtos.responses.CreateBlogResponse;
+import ng.hotsystems.contentManager.dtos.requests.*;
+import ng.hotsystems.contentManager.dtos.responses.*;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface UserController {
     ResponseEntity<?> registerUser(RegisterUserRequest request);
@@ -16,5 +14,11 @@ public interface UserController {
     CreateBlogResponse createBlog(CreateBlogRequest request);
 
     AddArticleResponse addArticle(AddArticleRequest request);
+
+    DeleteArticleResponse deleteArticle(DeleteArticleRequest request);
+
+    List<FindBlogArticlesResponse> viewBlog(String blogName);
+
+    FindArticleResponse viewArticle(String blogName, String articleTitle);
 
 }

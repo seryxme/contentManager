@@ -5,8 +5,17 @@ import ng.hotsystems.contentManager.data.models.Blog;
 import ng.hotsystems.contentManager.data.repositories.BlogRepository;
 import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
 import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
+import ng.hotsystems.contentManager.dtos.requests.DeleteArticleRequest;
+import ng.hotsystems.contentManager.dtos.requests.FindArticleRequest;
+import ng.hotsystems.contentManager.dtos.responses.FindBlogArticlesResponse;
+import ng.hotsystems.contentManager.exceptions.BlogDoesNotExistException;
+import ng.hotsystems.contentManager.exceptions.BlogExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BlogServiceImpl implements BlogService {
@@ -32,5 +41,46 @@ public class BlogServiceImpl implements BlogService {
 
         blogRepository.save(blog);
         return newArticle;
+    }
+
+    @Override
+    public void deleteArticle(DeleteArticleRequest deleteRequest) {
+        Blog foundBlog = blogRepository.findBlogByName(deleteRequest.getBlogName());
+        List<Article> articlesInBlog = foundBlog.getArticles();
+        for (int i = 0; i < articlesInBlog.size(); i++) {
+            if (Objects.equals(articlesInBlog.get(i).getTitle(), deleteRequest.getTitle())) {
+                articlesInBlog.remove(i);
+                break;
+            }
+        }
+
+        articleService.deleteArticle(deleteRequest);
+    }
+
+    @Override
+    public List<FindBlogArticlesResponse> viewBlog(String blogName) {
+        Blog foundBlog = blogRepository.findBlogByName(blogName);
+        if (foundBlog == null) throw new BlogDoesNotExistException("This blog does not exist. Create it?");
+
+        List<Article> articlesInBlog = foundBlog.getArticles();
+        List<FindBlogArticlesResponse> responseList = new ArrayList<>();
+
+        for(Article article: articlesInBlog) {
+            FindBlogArticlesResponse response = new FindBlogArticlesResponse();
+            response.setBlogName(blogName);
+            response.setTitle(article.getTitle());
+            response.setBodySummary(article.getBody().substring(0, 30) + "...");
+            response.setNumberOfLikes(article.getNumberOfLikes());
+            response.setNumberOfComments(article.getComments().size());
+
+            responseList.add(response);
+        }
+
+        return responseList;
+    }
+
+    @Override
+    public Article viewArticle(FindArticleRequest request) {
+        return articleService.viewArticle(request);
     }
 }

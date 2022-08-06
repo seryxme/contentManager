@@ -1,14 +1,9 @@
 package ng.hotsystems.contentManager.services;
 
-import ng.hotsystems.contentManager.data.models.Blog;
-import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
-import ng.hotsystems.contentManager.dtos.requests.LoginUserRequest;
-import ng.hotsystems.contentManager.dtos.requests.RegisterUserRequest;
-import ng.hotsystems.contentManager.dtos.responses.AddArticleResponse;
-import ng.hotsystems.contentManager.dtos.responses.CreateBlogResponse;
-import ng.hotsystems.contentManager.dtos.responses.LoginUserResponse;
-import ng.hotsystems.contentManager.dtos.responses.RegisterUserResponse;
+import ng.hotsystems.contentManager.dtos.requests.*;
+import ng.hotsystems.contentManager.dtos.responses.*;
+
+import java.util.List;
 
 
 public interface UserService {
@@ -18,7 +13,11 @@ public interface UserService {
 
     CreateBlogResponse createBlog(CreateBlogRequest request);
 
-    Blog viewBlog(String username);
+    List<FindBlogArticlesResponse> viewBlog(String blogName);
 
     AddArticleResponse addArticle(AddArticleRequest request);
+
+    DeleteArticleResponse deleteArticle(DeleteArticleRequest deleteRequest);
+
+    FindArticleResponse viewArticle(FindArticleRequest request);
 }

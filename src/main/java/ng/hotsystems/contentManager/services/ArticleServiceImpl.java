@@ -3,6 +3,10 @@ package ng.hotsystems.contentManager.services;
 import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.repositories.ArticleRepository;
 import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
+import ng.hotsystems.contentManager.dtos.requests.DeleteArticleRequest;
+import ng.hotsystems.contentManager.dtos.requests.FindArticleRequest;
+import ng.hotsystems.contentManager.exceptions.ArticleExistsException;
+import ng.hotsystems.contentManager.exceptions.BlogExistsException;
 import ng.hotsystems.contentManager.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +19,28 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Article addArticle(AddArticleRequest request) {
+        Article foundArticle = articleRepository.findArticleByTitle(request.getTitle());
+        if (foundArticle != null) throw new ArticleExistsException("This article already exists. Write a new one?");
+
         Article newArticle = new Article();
         Mapper.map(request, newArticle);
 
         return articleRepository.save(newArticle);
+    }
+
+    @Override
+    public void deleteArticle(DeleteArticleRequest deleteRequest) {
+        Article article = articleRepository.findArticleByTitle(deleteRequest.getTitle());
+        if (article == null) throw new ArticleExistsException("This article does not exist.");
+
+        articleRepository.delete(article);
+    }
+
+    @Override
+    public Article viewArticle(FindArticleRequest request) {
+        Article article = articleRepository.findArticleByTitle(request.getTitle());
+        if (article == null) throw new ArticleExistsException("This article does not exist.");
+
+        return articleRepository.findArticleByTitle(request.getTitle());
     }
 }

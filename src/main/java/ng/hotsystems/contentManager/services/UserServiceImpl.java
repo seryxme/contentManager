@@ -4,14 +4,9 @@ import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.models.Blog;
 import ng.hotsystems.contentManager.data.models.User;
 import ng.hotsystems.contentManager.data.repositories.UserRepository;
-import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
-import ng.hotsystems.contentManager.dtos.requests.LoginUserRequest;
-import ng.hotsystems.contentManager.dtos.requests.RegisterUserRequest;
-import ng.hotsystems.contentManager.dtos.responses.AddArticleResponse;
-import ng.hotsystems.contentManager.dtos.responses.CreateBlogResponse;
-import ng.hotsystems.contentManager.dtos.responses.LoginUserResponse;
-import ng.hotsystems.contentManager.dtos.responses.RegisterUserResponse;
+import ng.hotsystems.contentManager.dtos.requests.*;
+import ng.hotsystems.contentManager.dtos.responses.*;
+import ng.hotsystems.contentManager.exceptions.BlogExistsException;
 import ng.hotsystems.contentManager.exceptions.PasswordIncorrectException;
 import ng.hotsystems.contentManager.exceptions.UserDoesNotExistException;
 import ng.hotsystems.contentManager.exceptions.UserExistsException;
@@ -19,6 +14,7 @@ import ng.hotsystems.contentManager.utils.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -47,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginUserResponse loginUser(LoginUserRequest request) {
         User savedUser = userRepository.findUserByUsername(request.getUsername());
-        if (savedUser == null) throw new UserDoesNotExistException("Email not yet registered.");
+        if (savedUser == null) throw new UserDoesNotExistException("User not yet registered.");
         else if (!Objects.equals(savedUser.getPassword(), request.getPassword())) throw new PasswordIncorrectException("This password is incorrect.");
 
         LoginUserResponse response = new LoginUserResponse();
@@ -58,9 +54,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateBlogResponse createBlog(CreateBlogRequest request) {
-        Blog newBlog = blogService.createBlog(request);
-
         User registeredUser = userRepository.findUserByUsername(request.getUsername());
+        if (registeredUser.getBlog() != null) throw new BlogExistsException("You cannot have more than one blog.");
+
+        Blog newBlog = blogService.createBlog(request);
         registeredUser.setBlog(newBlog);
 
         userRepository.save(registeredUser);
@@ -72,8 +69,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Blog viewBlog(String username) {
-        return userRepository.findUserByUsername(username).getBlog();
+    public List<FindBlogArticlesResponse> viewBlog(String blogName) {
+
+        return blogService.viewBlog(blogName);
     }
 
     @Override
@@ -86,8 +84,27 @@ public class UserServiceImpl implements UserService {
         userRepository.save(registeredUser);
 
         AddArticleResponse response = new AddArticleResponse();
-        response.setMessage(String.format("Article with title '%s' has been added your blog.", request.getTitle()));
+        response.setMessage(String.format("Article with title '%s' has been added to your blog.", request.getTitle()));
 
+        return response;
+    }
+
+    @Override
+    public DeleteArticleResponse deleteArticle(DeleteArticleRequest deleteRequest) {
+        blogService.deleteArticle(deleteRequest);
+
+        DeleteArticleResponse response = new DeleteArticleResponse();
+        response.setMessage(String.format("Article with title '%s' has been deleted from your blog.", deleteRequest.getTitle()));
+
+        return response;
+    }
+
+    @Override
+    public FindArticleResponse viewArticle(FindArticleRequest request) {
+        Article foundArticle = blogService.viewArticle(request);
+        FindArticleResponse response = new FindArticleResponse();
+        Mapper.map(foundArticle, response);
+        response.setBlogName(request.getBlogName());
         return response;
     }
 }

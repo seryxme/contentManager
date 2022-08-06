@@ -15,6 +15,7 @@ import java.util.List;
 public class Article {
     @Id
     private String id;
+    private String writer;
     private String title;
     private String body;
     private int numberOfLikes;
