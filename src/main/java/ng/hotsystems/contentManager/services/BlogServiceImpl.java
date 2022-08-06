@@ -3,13 +3,9 @@ package ng.hotsystems.contentManager.services;
 import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.models.Blog;
 import ng.hotsystems.contentManager.data.repositories.BlogRepository;
-import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
-import ng.hotsystems.contentManager.dtos.requests.DeleteArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.FindArticleRequest;
+import ng.hotsystems.contentManager.dtos.requests.*;
 import ng.hotsystems.contentManager.dtos.responses.FindBlogArticlesResponse;
 import ng.hotsystems.contentManager.exceptions.BlogDoesNotExistException;
-import ng.hotsystems.contentManager.exceptions.BlogExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,5 +78,14 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Article viewArticle(FindArticleRequest request) {
         return articleService.viewArticle(request);
+    }
+
+    @Override
+    public Blog addComment(AddCommentRequest request) {
+        Article updatedArticle = articleService.addComment(request);
+        Blog foundBlog = blogRepository.findBlogByName(request.getBlogName());
+        foundBlog.getArticles().add(updatedArticle);
+
+        return blogRepository.save(foundBlog);
     }
 }

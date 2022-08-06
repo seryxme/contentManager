@@ -1,5 +1,6 @@
 package ng.hotsystems.contentManager.services;
 
+import ng.hotsystems.contentManager.data.models.Comment;
 import ng.hotsystems.contentManager.dtos.requests.*;
 import ng.hotsystems.contentManager.dtos.responses.*;
 
@@ -20,4 +21,6 @@ public interface UserService {
     DeleteArticleResponse deleteArticle(DeleteArticleRequest deleteRequest);
 
     FindArticleResponse viewArticle(FindArticleRequest request);
+
+    AddCommentResponse addComment(AddCommentRequest request);
 }

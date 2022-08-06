@@ -1,17 +1,13 @@
 package ng.hotsystems.contentManager.controllers;
 
 import ng.hotsystems.contentManager.dtos.requests.*;
-import ng.hotsystems.contentManager.dtos.responses.*;
-import ng.hotsystems.contentManager.exceptions.PasswordIncorrectException;
-import ng.hotsystems.contentManager.exceptions.UserDoesNotExistException;
-import ng.hotsystems.contentManager.exceptions.UserExistsException;
+import ng.hotsystems.contentManager.dtos.responses.AddCommentResponse;
+import ng.hotsystems.contentManager.exceptions.*;
 import ng.hotsystems.contentManager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class UserControllerImpl implements UserController {
@@ -41,34 +37,64 @@ public class UserControllerImpl implements UserController {
 
     @PatchMapping("/user")
     @Override
-    public CreateBlogResponse createBlog(@RequestBody CreateBlogRequest request) {
-        return userService.createBlog(request);
+    public ResponseEntity<?> createBlog(@RequestBody CreateBlogRequest request) {
+        try {
+            return new ResponseEntity<>(userService.createBlog(request), HttpStatus.CREATED);
+        } catch (BlogExistsException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/blog")
     @Override
-    public AddArticleResponse addArticle(@RequestBody AddArticleRequest request) {
-        return userService.addArticle(request);
+    public ResponseEntity<?> addArticle(@RequestBody AddArticleRequest request) {
+        try {
+            return new ResponseEntity<>(userService.addArticle(request), HttpStatus.CREATED);
+        } catch (ArticleExistsException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/blog")
     @Override
-    public DeleteArticleResponse deleteArticle(@RequestBody DeleteArticleRequest request) {
-        return userService.deleteArticle(request);
+    public ResponseEntity<?> deleteArticle(@RequestBody DeleteArticleRequest request) {
+        try {
+            return new ResponseEntity<>(userService.deleteArticle(request), HttpStatus.ACCEPTED);
+        } catch (ArticleDoesNotExistException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/blog/{blogName}")
     @Override
-    public List<FindBlogArticlesResponse> viewBlog(@PathVariable String blogName) {
-        return userService.viewBlog(blogName);
+    public ResponseEntity<?> viewBlog(@PathVariable String blogName) {
+        try {
+            return new ResponseEntity<>(userService.viewBlog(blogName), HttpStatus.ACCEPTED);
+        } catch (BlogDoesNotExistException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/{blogName}/{articleTitle}")
     @Override
-    public FindArticleResponse viewArticle(@PathVariable String blogName, @PathVariable String articleTitle) {
+    public ResponseEntity<?> viewArticle(@PathVariable String blogName, @PathVariable String articleTitle) {
         FindArticleRequest request = new FindArticleRequest();
         request.setTitle(articleTitle);
         request.setBlogName(blogName);
-        return userService.viewArticle(request);
+
+        try {
+            return new ResponseEntity<>(userService.viewArticle(request), HttpStatus.ACCEPTED);
+        } catch (ArticleDoesNotExistException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{blogName}/{articleTitle}")
+    @Override
+    public AddCommentResponse addComment(@RequestBody AddCommentRequest request, @PathVariable String blogName, @PathVariable String articleTitle) {
+        request.setArticleTitle(articleTitle);
+        request.setBlogName(blogName);
+
+        return userService.addComment(request);
     }
 }

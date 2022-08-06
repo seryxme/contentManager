@@ -2,10 +2,9 @@ package ng.hotsystems.contentManager.services;
 
 import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.models.Blog;
-import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.CreateBlogRequest;
-import ng.hotsystems.contentManager.dtos.requests.DeleteArticleRequest;
-import ng.hotsystems.contentManager.dtos.requests.FindArticleRequest;
+import ng.hotsystems.contentManager.data.models.Comment;
+import ng.hotsystems.contentManager.dtos.requests.*;
+import ng.hotsystems.contentManager.dtos.responses.AddCommentResponse;
 import ng.hotsystems.contentManager.dtos.responses.FindBlogArticlesResponse;
 
 import java.util.List;
@@ -21,4 +20,6 @@ public interface BlogService {
     List<FindBlogArticlesResponse> viewBlog(String blogName);
 
     Article viewArticle(FindArticleRequest request);
+
+    Blog addComment(AddCommentRequest request);
 }

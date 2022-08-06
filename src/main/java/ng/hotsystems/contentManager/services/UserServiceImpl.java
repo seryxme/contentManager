@@ -2,6 +2,7 @@ package ng.hotsystems.contentManager.services;
 
 import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.models.Blog;
+import ng.hotsystems.contentManager.data.models.Comment;
 import ng.hotsystems.contentManager.data.models.User;
 import ng.hotsystems.contentManager.data.repositories.UserRepository;
 import ng.hotsystems.contentManager.dtos.requests.*;
@@ -76,12 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AddArticleResponse addArticle(AddArticleRequest request) {
-        Article newArticle = blogService.addArticle(request);
-
-        User registeredUser = userRepository.findUserByUsername(request.getUsername());
-        registeredUser.getBlog().getArticles().add(newArticle);
-
-        userRepository.save(registeredUser);
+        blogService.addArticle(request);
 
         AddArticleResponse response = new AddArticleResponse();
         response.setMessage(String.format("Article with title '%s' has been added to your blog.", request.getTitle()));
@@ -105,6 +101,17 @@ public class UserServiceImpl implements UserService {
         FindArticleResponse response = new FindArticleResponse();
         Mapper.map(foundArticle, response);
         response.setBlogName(request.getBlogName());
+        return response;
+    }
+
+    @Override
+    public AddCommentResponse addComment(AddCommentRequest request) {
+        blogService.addComment(request);
+
+        AddCommentResponse response = new AddCommentResponse();
+//        Mapper.map(response, request);
+        response.setMessage("Your comment has been sent.");
+
         return response;
     }
 }

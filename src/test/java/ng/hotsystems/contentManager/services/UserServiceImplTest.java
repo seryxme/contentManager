@@ -267,4 +267,6 @@ class UserServiceImplTest {
         assertThat(response.getBody(), is("It's another day in the Village..."));
     }
 
+
+
 }

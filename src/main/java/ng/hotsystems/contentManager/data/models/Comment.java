@@ -13,4 +13,7 @@ public class Comment {
     private String id;
     private String content;
     private String commenterName;
+    private String articleTitle;
+    private String blogName;
+    private String writer;
 }

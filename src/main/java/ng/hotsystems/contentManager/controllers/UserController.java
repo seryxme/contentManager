@@ -1,24 +1,24 @@
 package ng.hotsystems.contentManager.controllers;
 
 import ng.hotsystems.contentManager.dtos.requests.*;
-import ng.hotsystems.contentManager.dtos.responses.*;
+import ng.hotsystems.contentManager.dtos.responses.AddCommentResponse;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public interface UserController {
     ResponseEntity<?> registerUser(RegisterUserRequest request);
 
     ResponseEntity<?> loginUser(LoginUserRequest request);
 
-    CreateBlogResponse createBlog(CreateBlogRequest request);
+    ResponseEntity<?> createBlog(CreateBlogRequest request);
 
-    AddArticleResponse addArticle(AddArticleRequest request);
+    ResponseEntity<?> addArticle(AddArticleRequest request);
 
-    DeleteArticleResponse deleteArticle(DeleteArticleRequest request);
+    ResponseEntity<?> deleteArticle(DeleteArticleRequest request);
 
-    List<FindBlogArticlesResponse> viewBlog(String blogName);
+    ResponseEntity<?> viewBlog(String blogName);
 
-    FindArticleResponse viewArticle(String blogName, String articleTitle);
+    ResponseEntity<?> viewArticle(String blogName, String articleTitle);
+
+    AddCommentResponse addComment(AddCommentRequest request, String blogName, String articleTitle);
 
 }

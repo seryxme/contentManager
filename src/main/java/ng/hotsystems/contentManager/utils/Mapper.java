@@ -1,9 +1,12 @@
 package ng.hotsystems.contentManager.utils;
 
 import ng.hotsystems.contentManager.data.models.Article;
+import ng.hotsystems.contentManager.data.models.Comment;
 import ng.hotsystems.contentManager.data.models.User;
 import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
+import ng.hotsystems.contentManager.dtos.requests.AddCommentRequest;
 import ng.hotsystems.contentManager.dtos.requests.RegisterUserRequest;
+import ng.hotsystems.contentManager.dtos.responses.AddCommentResponse;
 import ng.hotsystems.contentManager.dtos.responses.FindArticleResponse;
 
 public class Mapper {
@@ -25,5 +28,15 @@ public class Mapper {
         response.setNumberOfLikes(article.getNumberOfLikes());
         response.setComments(article.getComments());
         response.setWriter(article.getWriter());
+    }
+
+    public static void map(AddCommentRequest request, Comment comment) {
+        comment.setCommenterName(request.getCommenterName());
+        comment.setContent(request.getContent());
+    }
+
+    public static void map(AddCommentResponse response, AddCommentRequest request) {
+        response.setContent(request.getContent());
+        response.setCommenterName(request.getCommenterName());
     }
 }

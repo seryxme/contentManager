@@ -5,6 +5,7 @@ import ng.hotsystems.contentManager.data.repositories.ArticleRepository;
 import ng.hotsystems.contentManager.dtos.requests.AddArticleRequest;
 import ng.hotsystems.contentManager.dtos.requests.DeleteArticleRequest;
 import ng.hotsystems.contentManager.dtos.requests.FindArticleRequest;
+import ng.hotsystems.contentManager.exceptions.ArticleDoesNotExistException;
 import ng.hotsystems.contentManager.exceptions.ArticleExistsException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,7 +104,7 @@ class ArticleServiceImplTest {
         deleteRequest.setBlogName("Semicolon Diaries");
         deleteRequest.setUsername("tee_mix");
 
-        assertThrows(ArticleExistsException.class, () -> articleService.deleteArticle(deleteRequest));
+        assertThrows(ArticleDoesNotExistException.class, () -> articleService.deleteArticle(deleteRequest));
         assertEquals(1L, articleRepository.count());
         assertThat(articleRepository.count(), is(1L));
     }
@@ -141,7 +142,30 @@ class ArticleServiceImplTest {
         findRequest.setUsername("tee_mix");
         findRequest.setTitle("It's Fun Friday!");
 
-        assertThrows(ArticleExistsException.class, () -> articleService.viewArticle(findRequest));
+        assertThrows(ArticleDoesNotExistException.class, () -> articleService.viewArticle(findRequest));
+    }
+
+    @Test
+    public void commentCanBeAddedToArticleTest() {
+
+        AddArticleRequest request2 = new AddArticleRequest();
+        request2.setTitle("It's Fun Friday!");
+        request2.setBody("The last Friday of every month is always one to look forward to...");
+        request2.setBlogName("Semicolon Diaries");
+        request2.setUsername("tee_mix");
+
+        articleService.addArticle(request1);
+        articleService.addArticle(request2);
+
+        FindArticleRequest findRequest = new FindArticleRequest();
+        findRequest.setBlogName("Semicolon Diaries");
+        findRequest.setUsername("tee_mix");
+        findRequest.setTitle("Day of the Edmodo");
+
+        Article foundArticle = articleService.viewArticle(findRequest);
+
+        assertEquals("It's another day in the Village...", foundArticle.getBody());
+        assertThat(foundArticle.getBody(), is("It's another day in the Village..."));
     }
 
 }
