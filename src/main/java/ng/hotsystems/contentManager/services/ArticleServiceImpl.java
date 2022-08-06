@@ -36,6 +36,9 @@ public class ArticleServiceImpl implements ArticleService {
     public void deleteArticle(DeleteArticleRequest deleteRequest) {
         Article article = articleRepository.findArticleByTitle(deleteRequest.getTitle());
         if (article == null) throw new ArticleDoesNotExistException("This article does not exist.");
+        for (Comment comment: article.getComments()) {
+            commentService.deleteComment(comment);
+        }
 
         articleRepository.delete(article);
     }
