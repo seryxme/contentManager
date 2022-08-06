@@ -8,6 +8,4 @@ import lombok.NoArgsConstructor;
 public class AddCommentResponse {
 
     private String message;
-    private String content;
-    private String commenterName;
 }
