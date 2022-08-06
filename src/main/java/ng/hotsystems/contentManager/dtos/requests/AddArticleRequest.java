@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RegisterUserRequest {
+public class AddArticleRequest {
+    private String title;
+    private String body;
+    private String blogName;
     private String username;
-    private String email;
-    private String password;
 }

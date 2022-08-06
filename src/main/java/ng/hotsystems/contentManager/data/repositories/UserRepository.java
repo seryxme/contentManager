@@ -1,4 +1,4 @@
-package ng.hotsystems.contentManager.data.reporsitories;
+package ng.hotsystems.contentManager.data.repositories;
 
 import ng.hotsystems.contentManager.data.models.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
