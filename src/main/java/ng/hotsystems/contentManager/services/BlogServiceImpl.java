@@ -65,7 +65,8 @@ public class BlogServiceImpl implements BlogService {
             FindBlogArticlesResponse response = new FindBlogArticlesResponse();
             response.setBlogName(blogName);
             response.setTitle(article.getTitle());
-            response.setBodySummary(article.getBody().substring(0, 30) + "...");
+            if (article.getBody().length() > 30) response.setBodySummary(article.getBody().substring(0, 30) + "...");
+            else response.setBodySummary(article.getBody());
             response.setNumberOfLikes(article.getNumberOfLikes());
             response.setNumberOfComments(article.getComments().size());
 

@@ -14,4 +14,16 @@ public class FindArticleResponse {
     private String body;
     private int numberOfLikes;
     private List<Comment> comments;
+
+    @Override
+    public String toString() {
+        return "FindArticleResponse{" +
+                "writer='" + writer + '\'' +
+                ", blogName='" + blogName + '\'' +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", numberOfLikes=" + numberOfLikes +
+                ", comments=" + comments +
+                '}';
+    }
 }

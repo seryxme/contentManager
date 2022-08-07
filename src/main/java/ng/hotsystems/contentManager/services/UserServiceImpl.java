@@ -2,7 +2,6 @@ package ng.hotsystems.contentManager.services;
 
 import ng.hotsystems.contentManager.data.models.Article;
 import ng.hotsystems.contentManager.data.models.Blog;
-import ng.hotsystems.contentManager.data.models.Comment;
 import ng.hotsystems.contentManager.data.models.User;
 import ng.hotsystems.contentManager.data.repositories.UserRepository;
 import ng.hotsystems.contentManager.dtos.requests.*;

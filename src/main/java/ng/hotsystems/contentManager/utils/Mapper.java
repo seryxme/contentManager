@@ -35,8 +35,8 @@ public class Mapper {
         comment.setContent(request.getContent());
     }
 
-    public static void map(AddCommentResponse response, AddCommentRequest request) {
-        response.setContent(request.getContent());
-        response.setCommenterName(request.getCommenterName());
-    }
+//    public static void map(AddCommentResponse response, AddCommentRequest request) {
+//        response.setContent(request.getContent());
+//        response.setCommenterName(request.getCommenterName());
+//    }
 }
