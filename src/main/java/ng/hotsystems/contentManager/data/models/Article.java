@@ -19,6 +19,7 @@ public class Article {
     private String title;
     private String body;
     private int numberOfLikes;
+    private String blogName;
     @DBRef
     private List<Comment> comments = new ArrayList<>();
 }
